@@ -1,0 +1,29 @@
+name: CI - Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  IMAGE_NAME: launchpad
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Build Docker image
+      run: |
+        docker build -t $IMAGE_NAME:${{ github.sha }} .
+        docker tag $IMAGE_NAME:${{ github.sha }} $IMAGE_NAME:latest
+
+    - name: Run container and test
+      run: |
+        docker run -d -p 8000:8000 --name test-container $IMAGE_NAME:latest
+        sleep 5
+        curl -f http://localhost:8000/health
+        docker stop test-container
