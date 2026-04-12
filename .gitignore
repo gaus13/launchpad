@@ -29,3 +29,9 @@ htmlcov/
 .idea/
 .DS_Store
 Thumbs.db
+
+id_rsa
+id_rsa.pub
+
+*.pem
+*.key
